@@ -37,18 +37,26 @@ namespace ApiValidator.model
         [JsonPropertyName("customer")]
         public Customer Customer { get; set; }
 
+        [JsonPropertyName("dueDate")]
+        public string DueDate { get; set; }
+
+        [JsonPropertyName("documentItems")]
+        public DocumentItems DocumentItems { get; set; }
+
         [JsonPropertyName("docDate")]
         public string DocDate { get; set; }
 
         [JsonConstructor]
         public Document(string providerUserToken, string providerMsgId, string providerMsgReferenceId,
-                        DocumentType documentType, Customer customer, string docDate)
+                        DocumentType documentType, Customer customer, string dueDate, DocumentItems documentItems, string docDate)
         {
             ProviderUserToken = providerUserToken;
             ProviderMsgId = providerMsgId;
             ProviderMsgReferenceId = providerMsgReferenceId;
             DocumentType = documentType;
             Customer = customer;
+            DueDate = dueDate;
+            DocumentItems = documentItems;
             DocDate = docDate;
         }
     }
