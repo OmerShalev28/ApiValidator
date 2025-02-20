@@ -16,11 +16,11 @@ namespace ApiValidator.generator
         {
             int providerMsgIdNum = random.Next(1000, 100000);
             string providerMsgReferenceId = providerMsgReferenceIdPrefix + providerMsgIdNum;
-            DocumentType documentType = DocumentType.Invoice;
-            //DocumentType documentType = documentTypes[random.Next(documentTypes.Length)];
+            //DocumentType documentType = DocumentType.InvoiceReceipt;
+            DocumentType documentType = documentTypes[random.Next(documentTypes.Length)];
             string docDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
             string dueDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
-            Customer customer = new Customer("customer name", "Address comes here", "Anytown", "0500500500", "customer@email.com");
+            Customer customer = new Customer("Omer Shalev", "Address comes here", "Anytown", "0500500500", "customer@email.com");
             DocumentItems documentItems = new DocumentItems();
             Document doc= new Document(providerUserToken, providerMsgIdNum.ToString(), providerMsgReferenceId, documentType, customer, dueDate, documentItems, docDate);
             return doc;
