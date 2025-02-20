@@ -70,9 +70,8 @@ class Program
         logger.Info("Generating document");
         DocumentGenerator generator = new DocumentGenerator();
         Document document = generator.GenerateDocument(providerUserToken);
-        logger.Info("Generated document: " + document.ProviderMsgId);
-
         string json = JsonSerializer.Serialize(document, new JsonSerializerOptions { WriteIndented = true });
+        logger.Info("Generated document: " + json);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         logger.Info("Sending document creation request");
@@ -195,9 +194,11 @@ class Program
     {
         var data = new { providerUserToken };
         string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        logger.Info("Sending documents list fetch request: " + json);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         HttpResponseMessage responseMessage = await _httpClient.PostAsync(_baseUrl + "documents/search", content);
         string responseContent = await responseMessage.Content.ReadAsStringAsync();
+        logger.Info("Fetched list of all documents." );
         return responseContent;
     }
 
