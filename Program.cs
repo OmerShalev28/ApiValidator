@@ -18,11 +18,13 @@ class Program
     private static readonly string bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjYxY2Q4Nzc3OTQ3OWVmODQ1YjNmZGJj" +
         "YyIsIm5iZiI6MTczOTk2MzIyNCwiZXhwIjoxNzQwNTY4MDI0LCJpYXQiOjE3Mzk5NjMyMjR9.HA8PAjAmj5oVQoPT0hDo-lG2xIzDQDevmDZ3X9p1qs4";
     private static readonly ILog logger = LogManager.GetLogger(typeof(Program));
-    private static readonly Dictionary<int, string> errorMessages = 
-        new Dictionary<int, string> 
+    private static readonly Dictionary<int, string> errorMessages =
+        new Dictionary<int, string>
         {
-            {95,"Request with the same providerMsgId already in queue." }, 
+            {95,"Request with the same providerMsgId already in queue." },
+            {96,"" },
             {97, "providerMsgId is invalid." },
+            {98,"Invalid UserId provided" },
             {99, "General Error"}
         };
 
@@ -34,7 +36,7 @@ class Program
 
         try
         {
-            
+
             string responseContent = await CreateDocumentApiCall();
 
             int resultCodeId = GetResultCodeIdFromResp(responseContent);
@@ -47,16 +49,16 @@ class Program
 
                 string documentsListResponseContent = await FetchDocumentsListApiCall();
 
-                bool flag = ValidateDocumentExists(documentId, documentsListResponseContent);
+                ValidateDocumentExists(documentId, documentsListResponseContent);
             }
             else
             {
-                logger.Error("Document creation request ended with resultCodeId: " + resultCodeId + " " + errorMessages[resultCodeId]);
+                logger.Error("Document creation request failed with resultCodeId: " + resultCodeId + " " + errorMessages[resultCodeId]);
                 return;
             }
         }
         catch (Exception e)
-        { 
+        {
             logger.Error(e.Message);
             return;
         }
@@ -79,9 +81,9 @@ class Program
 
         if (!response.IsSuccessStatusCode)
         {
-            if(response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                throw new Exception("Document creation request ended with status: " + response.StatusCode);
+                throw new Exception("Document creation request failed with status: " + response.StatusCode);
             }
 
             else
@@ -99,7 +101,7 @@ class Program
                     }
                 }
             }
-                
+
         }
 
         logger.Info("Received response: " + GetFormattedRespContent(responseContent));
@@ -116,6 +118,7 @@ class Program
         }
         return responseFormatted;
     }
+
     public static int GetResultCodeIdFromResp(string responseContent)
     {
         int resultCodeId;
@@ -144,7 +147,7 @@ class Program
 
     public static async Task<string> DocumentCreationStatusPolling(string requestId)
     {
-        string responseContent="";
+        string responseContent = "";
         logger.Info("Polling document creation status");
         for (int i = 0; i < 5; i++)
         {
@@ -156,7 +159,7 @@ class Program
             resultCodeId = GetResultCodeIdFromResp(responseContent);
             if (resultCodeId != 1 && resultCodeId != 102)
             {
-                throw new Exception("Document creation failed" + errorMessages[resultCodeId]);
+                throw new Exception("Document creation failed due to: " + errorMessages[resultCodeId] + GetValidationErrorsFromResp(responseContent));
             }
             else if (resultCodeId == 102)
             {
@@ -165,6 +168,16 @@ class Program
         }
         logger.Info("Document creation sucsseded: " + GetFormattedRespContent(responseContent));
         return GetDocumentIdFromResp(responseContent);
+    }
+
+    public static string GetValidationErrorsFromResp(string responseContent)
+    {
+        string validationErrors = "";
+        using (JsonDocument doc = JsonDocument.Parse(responseContent))
+        {
+            JsonElement root = doc.RootElement;
+            return root.GetProperty("validationErrors").ToString();
+        }
     }
 
     public static string GetDocumentIdFromResp(string responseContent)
@@ -177,10 +190,10 @@ class Program
         }
         return documentId;
     }
+
     public static async Task<string> FetchDocumentsListApiCall()
     {
-        var data = providerUserToken;
-        //var data = new { providerUserToken = "350ff4d2-18cc-4e61-879c-d3b13db76a0d" };
+        var data = new { providerUserToken };
         string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         HttpResponseMessage responseMessage = await _httpClient.PostAsync(_baseUrl + "documents/search", content);
@@ -188,42 +201,26 @@ class Program
         return responseContent;
     }
 
-    public static bool ValidateDocumentExists(string documentId, string jsonResponse)
+    public static void ValidateDocumentExists(string documentId, string jsonResponse)
     {
-        using JsonDocument doc = JsonDocument.Parse(jsonResponse);
+        JsonDocument doc = JsonDocument.Parse(jsonResponse);
         JsonElement root = doc.RootElement;
 
-        if (root.TryGetProperty("result", out JsonElement result) && result.TryGetProperty("items", out JsonElement itemsArray))
+
+        JsonElement itemsArray = root.GetProperty("result").GetProperty("items");
+        int totalItemCount = root.GetProperty("result").GetProperty("totalItemCount").GetInt32();
+        logger.Info("Total number of documents fetched: " + totalItemCount);
+
+        foreach (JsonElement item in itemsArray.EnumerateArray())
         {
-            List<string> ids = new List<string>();
-
-            foreach (JsonElement item in itemsArray.EnumerateArray())
+            if (item.GetProperty("id").GetString() == documentId)
             {
-                if (item.TryGetProperty("id", out JsonElement idElement))
-                {
-                    ids.Add(idElement.GetString());
-                }
-            }
-
-            Console.WriteLine("Extracted IDs:");
-            foreach (string id in ids)
-            {
-                Console.WriteLine(id);
-            }
-
-            if(ids.Contains(documentId))
-            {
-                Console.WriteLine("Document exists in the list");
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("Document does not exist in the list");
-                return false;
+                logger.Info("Document with id: " + documentId + " found in the list");
+                logger.Info("Document details: " + GetFormattedRespContent(item.ToString()));
+                return;
             }
         }
-
-        return false;
-
+        logger.Warn("Document with id: " + documentId + " not found in the list");
     }
+
 }
