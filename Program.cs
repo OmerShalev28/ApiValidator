@@ -1,7 +1,5 @@
 ﻿using ApiValidator.generator;
 using ApiValidator.model;
-using ApiValidator.response;
-using ApiValidator.response.resultImpl;
 using System;
 using System.Net.Http.Headers;
 using System.Text;
@@ -22,6 +20,9 @@ class Program
         string requestId = GetDocumentResult(responseContent);
         string documentId = await DocumentCreationStatusPolling(requestId);
         string documentsListResponseContent = await FetchDocumentsListApiCall();
+
+        bool flag = ValidateDocumentExists(documentId, documentsListResponseContent);
+
     }
 
     public static async Task<string> CreateDocumentApiCall()
@@ -90,7 +91,45 @@ class Program
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         HttpResponseMessage responseMessage = await _httpClient.PostAsync(_baseUrl + "documents/search", content);
         string responseContent = await responseMessage.Content.ReadAsStringAsync();
-        Console.WriteLine(responseContent);
         return responseContent;
+    }
+
+    public static bool ValidateDocumentExists(string documentId, string jsonResponse)
+    {
+        using JsonDocument doc = JsonDocument.Parse(jsonResponse);
+        JsonElement root = doc.RootElement;
+
+        if (root.TryGetProperty("result", out JsonElement result) && result.TryGetProperty("items", out JsonElement itemsArray))
+        {
+            List<string> ids = new List<string>();
+
+            foreach (JsonElement item in itemsArray.EnumerateArray())
+            {
+                if (item.TryGetProperty("id", out JsonElement idElement))
+                {
+                    ids.Add(idElement.GetString());
+                }
+            }
+
+            Console.WriteLine("Extracted IDs:");
+            foreach (string id in ids)
+            {
+                Console.WriteLine(id);
+            }
+
+            if(ids.Contains(documentId))
+            {
+                Console.WriteLine("Document exists in the list");
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Document does not exist in the list");
+                return false;
+            }
+        }
+
+        return false;
+
     }
 }
