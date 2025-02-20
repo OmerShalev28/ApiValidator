@@ -1,0 +1,122 @@
+2025-02-20 16:32:41 [1] INFO  Program - Generating document
+2025-02-20 16:32:41 [1] INFO  Program - Generated document: {
+  "providerUserToken": "350ff4d2-18cc-4e61-879c-d3b13db76a0d",
+  "providerMsgId": "27691",
+  "providerMsgReferenceId": "message-27691",
+  "docType": 7,
+  "customer": {
+    "name": "Eve",
+    "address": "5678 Oak St",
+    "cityName": "San Antonio",
+    "mainPhone": "6831513044"
+  },
+  "dueDate": "2025-02-20T14:32:41Z",
+  "documentItems": {
+    "paymentItems": [
+      {
+        "quantity": 2,
+        "pricePerUnit": 149,
+        "vatOption": 1,
+        "description": "Item description"
+      }
+    ],
+    "roundTotalSum": true
+  },
+  "docDate": "2025-02-20T14:32:41Z"
+}
+2025-02-20 16:32:41 [1] INFO  Program - Sending document creation request
+2025-02-20 16:32:42 [9] INFO  Program - Received response: {
+  "resultCodeId": 101,
+  "result": "67b73d0a1f06436fbd702e0c",
+  "validationErrors": null
+}
+2025-02-20 16:32:42 [9] INFO  Program - Polling document creation status
+2025-02-20 16:32:42 [9] INFO  Program - Polling attempt: 1
+2025-02-20 16:32:43 [9] INFO  Program - Polling attempt: 2
+2025-02-20 16:32:44 [9] INFO  Program - Polling attempt: 3
+2025-02-20 16:32:46 [9] INFO  Program - Document creation succeeded: {
+  "resultCodeId": 102,
+  "result": {
+    "index": 100004,
+    "documentId": "67b73d0b452a3d4efd30f905",
+    "linkToOriginal": "https://test.smartbee.co.il/public/files/67b73d0d452a3d4efd30f906/1.ea6eb353285f2ff338a0c9143e4e1f3dab18b183.f4cf23c0aedad58cd5a2da8a0e46412146f4df3d2cdf5eb3640c31e692b71307/100004_Original.pdf",
+    "linkToCopy": "https://test.smartbee.co.il/public/files/67b73d0d452a3d4efd30f907/1.2f455d96895eb27c53b2b356eaa39719c26de1fc.ecc5bb5add748be21b6abebbb6fc2337c3fb759933f6d2e14e4eba3aaeda8679/100004_Copy.pdf"
+  },
+  "validationErrors": null
+}
+2025-02-20 16:32:46 [9] INFO  Program - Sending documents list fetch request: {
+  "ProviderUserToken": "350ff4d2-18cc-4e61-879c-d3b13db76a0d"
+}
+2025-02-20 16:32:47 [9] INFO  Program - Fetched list of all documents.
+2025-02-20 16:32:47 [9] INFO  Program - Total number of documents fetched: 78
+2025-02-20 16:32:47 [9] INFO  Program - Document with id: 67b73d0b452a3d4efd30f905 found in the list
+2025-02-20 16:32:47 [9] INFO  Program - Document details: {
+  "id": "67b73d0b452a3d4efd30f905",
+  "creationDate": "2025-02-20T14:32:45.516Z",
+  "index": 100004,
+  "taxConfirmationNumber": null,
+  "linkToOriginal": "https://test.smartbee.co.il/public/files/67b73d0d452a3d4efd30f906/1.ea6eb353285f2ff338a0c9143e4e1f3dab18b183.f4cf23c0aedad58cd5a2da8a0e46412146f4df3d2cdf5eb3640c31e692b71307/100004_Original.pdf",
+  "linkToCopy": "https://test.smartbee.co.il/public/files/67b73d0d452a3d4efd30f907/1.2f455d96895eb27c53b2b356eaa39719c26de1fc.ecc5bb5add748be21b6abebbb6fc2337c3fb759933f6d2e14e4eba3aaeda8679/100004_Copy.pdf",
+  "invoiceDetails": {
+    "totalVatFree": 0.0,
+    "totalVatObligated": 252.54237288135596,
+    "discount": 0.0,
+    "totalVatFreeAfterDiscount": 0.0,
+    "totalVatObligatedAfterDiscount": 252.54237288135596,
+    "vatPercent": 18.0,
+    "totalVat": 45.45762711864404,
+    "total": 298.0
+  },
+  "receiptDetails": null,
+  "customer": {
+    "providerCustomerId": null,
+    "name": "eve",
+    "email": null,
+    "mainPhone": "6831513044",
+    "dealerNumber": null,
+    "address": "5678 oak st",
+    "cityName": "san antonio",
+    "seconderyPhone": null,
+    "contactName": null,
+    "comments": null,
+    "netEOM": 0,
+    "accountNumber": null,
+    "bankName": null,
+    "branchName": null,
+    "journalAccount": null
+  },
+  "docType": "OrderConfirmation",
+  "dueDate": "2025-02-20T12:00:00Z",
+  "comments": null,
+  "title": null,
+  "extraCommentsForEmail": null,
+  "currency": {
+    "currencyType": "ILS",
+    "rate": 1.0
+  },
+  "documentItems": {
+    "paymentItems": [
+      {
+        "providerItemId": null,
+        "catNum": null,
+        "quantity": 2.0,
+        "pricePerUnit": 126.27118644067798,
+        "vatOption": "Include",
+        "description": "Item description"
+      }
+    ],
+    "discount": {
+      "discountValueType": "DirectAmount",
+      "value": 0.0
+    },
+    "roundTotalSum": true
+  },
+  "docDate": "2025-02-20T12:00:00Z",
+  "creationMetadata": {
+    "language": "HEB",
+    "currencyTarget": "ILS",
+    "sendOriginalToCustomer": true
+  },
+  "isDraft": false,
+  "incomeClassName": "\u05DB\u05DC\u05DC\u05D9"
+}
