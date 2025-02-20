@@ -1,0 +1,9 @@
+{
+  "BaseUrl": "<BASE_URL>",
+  "ProviderUserToken": "<PROVIDER_USER_TOKEN>",
+  "BearerToken": "<BEARER_TOKEN>",
+  "ContentType": "application/json",
+  "CreateEndPoint": "documents/create",
+  "GetEndPoint": "documents/",
+  "FetchEndPoint": "documents/search"
+}

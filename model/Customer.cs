@@ -23,17 +23,13 @@ namespace ApiValidator.model
         [JsonPropertyName("mainPhone")]
         public string Phone { get; set; }
 
-        [JsonPropertyName("email")]
-        public string Email { get; set; }
-
         [JsonConstructor]
-        public Customer(string name, string address, string city, string phone, string email)
+        public Customer(string name, string address, string city, string phone)
         {
             Name = name;
             Address = address;
             City = city;
             Phone = phone;
-            Email = email;
         }
     }
 

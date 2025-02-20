@@ -14,6 +14,7 @@ public enum DiscountValueType
     Percentage,
     DirectAmount
 }
+
 public class DocumentItems
 {
     [JsonPropertyName("paymentItems")]
@@ -32,6 +33,8 @@ public class DocumentItems
 
 public class PaymentItem
 {
+    private static Random random = new Random();
+
     [JsonPropertyName("quantity")]
     public int Quantity { get; set; }
 
@@ -46,8 +49,8 @@ public class PaymentItem
 
     public PaymentItem()
     {
-        Quantity = 1;
-        PricePerUnit = 0;
+        Quantity = random.Next(1,3);
+        PricePerUnit = random.Next(10, 1000); ;
         VatOption = VatOption.Include;
         Description = "Item description";
     }
