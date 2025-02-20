@@ -20,7 +20,7 @@ This project is a **C# console application** that validates an external API by g
 ### **1. Clone the Repository**
 
 ```sh
-git clone <repository-url>
+git clone https://github.com/OmerShalev28/ApiValidator.git
 cd <project-directory>
 ```
 
